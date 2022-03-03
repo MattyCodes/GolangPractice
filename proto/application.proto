@@ -1,0 +1,29 @@
+syntax = "proto3";
+option go_package = "../gen";
+
+package application;
+
+// User hits the server and asks for a show recommendation.
+// This is the PB message to be received by our service.
+message ShowRecommendationRequest {
+  string name = 1;
+}
+
+// A show recommendation message which contains the name of the
+// individual that requested the recommendation, and the name of
+// the show that is being recommended.
+// This is the PB message to be returned by our service.
+message ShowRecommendation {
+  string name = 1;
+  string show = 2;
+}
+
+// This is our service which will accept a show recommendation request via
+// gRPC, generate a show recommendation and respond with it.
+service ShowRecommendationService {
+  rpc RecommendShow(ShowRecommendationRequest) returns (ShowRecommendation) {}
+}
+
+// To create the Protobuf-generated code, run the following in
+// a terminal, from the top of our project directory:
+// `protoc --go_out=./gen ./proto/application.proto`
