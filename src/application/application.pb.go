@@ -4,9 +4,13 @@
 // 	protoc        v3.15.8
 // source: proto/application.proto
 
-package gen
+package application
 
 import (
+	context "context"
+	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -147,8 +151,9 @@ var file_proto_application_proto_rawDesc = []byte{
 	0x6e, 0x2e, 0x53, 0x68, 0x6f, 0x77, 0x52, 0x65, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x64, 0x61,
 	0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1f, 0x2e, 0x61, 0x70,
 	0x70, 0x6c, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x53, 0x68, 0x6f, 0x77, 0x52, 0x65,
-	0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x64, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x00, 0x42, 0x08,
-	0x5a, 0x06, 0x2e, 0x2e, 0x2f, 0x67, 0x65, 0x6e, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x64, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x00, 0x42, 0x0f,
+	0x5a, 0x0d, 0x2e, 0x2f, 0x61, 0x70, 0x70, 0x6c, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x62,
+	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -227,4 +232,84 @@ func file_proto_application_proto_init() {
 	file_proto_application_proto_rawDesc = nil
 	file_proto_application_proto_goTypes = nil
 	file_proto_application_proto_depIdxs = nil
+}
+
+// Reference imports to suppress errors if they are not otherwise used.
+var _ context.Context
+var _ grpc.ClientConnInterface
+
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the grpc package it is being compiled against.
+const _ = grpc.SupportPackageIsVersion6
+
+// ShowRecommendationServiceClient is the client API for ShowRecommendationService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type ShowRecommendationServiceClient interface {
+	RecommendShow(ctx context.Context, in *ShowRecommendationRequest, opts ...grpc.CallOption) (*ShowRecommendation, error)
+}
+
+type showRecommendationServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewShowRecommendationServiceClient(cc grpc.ClientConnInterface) ShowRecommendationServiceClient {
+	return &showRecommendationServiceClient{cc}
+}
+
+func (c *showRecommendationServiceClient) RecommendShow(ctx context.Context, in *ShowRecommendationRequest, opts ...grpc.CallOption) (*ShowRecommendation, error) {
+	out := new(ShowRecommendation)
+	err := c.cc.Invoke(ctx, "/application.ShowRecommendationService/RecommendShow", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// ShowRecommendationServiceServer is the server API for ShowRecommendationService service.
+type ShowRecommendationServiceServer interface {
+	RecommendShow(context.Context, *ShowRecommendationRequest) (*ShowRecommendation, error)
+}
+
+// UnimplementedShowRecommendationServiceServer can be embedded to have forward compatible implementations.
+type UnimplementedShowRecommendationServiceServer struct {
+}
+
+func (*UnimplementedShowRecommendationServiceServer) RecommendShow(context.Context, *ShowRecommendationRequest) (*ShowRecommendation, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RecommendShow not implemented")
+}
+
+func RegisterShowRecommendationServiceServer(s *grpc.Server, srv ShowRecommendationServiceServer) {
+	s.RegisterService(&_ShowRecommendationService_serviceDesc, srv)
+}
+
+func _ShowRecommendationService_RecommendShow_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ShowRecommendationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ShowRecommendationServiceServer).RecommendShow(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/application.ShowRecommendationService/RecommendShow",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ShowRecommendationServiceServer).RecommendShow(ctx, req.(*ShowRecommendationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _ShowRecommendationService_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "application.ShowRecommendationService",
+	HandlerType: (*ShowRecommendationServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "RecommendShow",
+			Handler:    _ShowRecommendationService_RecommendShow_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/application.proto",
 }

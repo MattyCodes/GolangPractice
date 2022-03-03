@@ -1,37 +1,40 @@
+// Executable file.
 package main
 
+// Import libraries.
 import (
   "fmt"
-  // "log"
-  // "net"
-  // "google.golang.org/grpc"
-  pb "github.com/MattyCodes/GolangPractice/gen"
-  "github.com/MattyCodes/GolangPractice/show_recommendation"
+  "net"
+  "google.golang.org/grpc"
+  "golang.org/x/net/context"
+  pb "github.com/MattyCodes/GolangPractice/src/application"
 )
+
+type server struct {
+  pb.UnimplementedShowRecommendationServiceServer
+}
+
+func (s *server) RecommendShow(ctx context.Context, recommendation_request *pb.ShowRecommendationRequest) (*pb.ShowRecommendation, error) {
+  fmt.Println("Recommendation request received...")
+  fmt.Println(recommendation_request)
+
+  return &pb.ShowRecommendation{ Name: "Matty", Show: "Peaky Blinders" }, nil
+}
 
 func main() {
   fmt.Println("Server running...")
 
-  request := &pb.ShowRecommendationRequest{ Name: "Matty" }
-  result := show_recommendation.RecommendShow(*request)
+  lis, err := net.Listen("tcp", fmt.Sprintf(":%d", 9000))
 
-  fmt.Println(result)
+  if err != nil {
+    fmt.Println("failed to listen: %v", err)
+  }
 
-  // s := &pb.ShowRecommendation{Name: "Matty", Show: "Peaky Blinders"}
-  //
-  // fmt.Println(s)
-  // lis, err := net.Listen("tcp", fmt.Sprintf(":%d", 9000))
-  // if err != nil {
-  //         log.Fatalf("failed to listen: %v", err)
-  // }
-  //
-  // s := shoopy.Server{}
-  //
-  // grpcServer := grpc.NewServer()
-  //
-  // shoopy.RegisterShoopyServiceServer(grpcServer, &s)
-  //
-  // if err := grpcServer.Serve(lis); err != nil {
-  //         log.Fatalf("failed to serve: %s", err)
-  // }
+  grpcServer := grpc.NewServer()
+
+  pb.RegisterShowRecommendationServiceServer(grpcServer, &server{})
+
+  if err := grpcServer.Serve(lis); err != nil {
+    fmt.Println("failed to serve: %s", err)
+  }
 }
