@@ -38,5 +38,8 @@ $ go run client.go
 If you were to change the name that we provide in our `ShowRecommendationRequest` message, you would see that change reflected in the resulting
 `ShowRecommendation` as well.
 
-
-
+## Further Considerations
+A couple of things worth noting that I will list out below.
+1. At the time of setting up this project, I am brand new to writing Go. I am by no means recommending anything in here as standard practice; I am just familiarizing myself with these tools.
+2. The Protobuf-generated code encompasses the server _and_ client functionality. In this example our client lives in the same codebase as our server, but if we had a client that lived in a separate codebase (very likely if implementing microservices), we would need to share that generated code somehow. This could possibly be achieved by storing all Protobuf definitions and generated code in a separate repository, which is then programmatically copied into other projects with Terraform. It could also possibly be achieved by storing these results in a shared library like a Rubygem which could then be versioned and required by multiple projects. A coworker also recommended Git sub-modules as a potential solution.
+3. This example is only intended to run on a local machine, so of course there is no proper routing and SSL is not supported. As a result, the setup of our gRPC server is exceedingly simple. It is safe to assume that doing something like this in a production environment would require some extra work and configuration.
