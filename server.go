@@ -13,6 +13,7 @@ import (
   "net"
   "google.golang.org/grpc"
   "golang.org/x/net/context"
+  "github.com/MattyCodes/GolangPractice/shows"
   pb "github.com/MattyCodes/GolangPractice/src/application"
 )
 
@@ -28,10 +29,20 @@ type server struct {
 // the function will take a `RecommendationRequest` argument and provide a `ShowRecommendation`
 // in return. The client also expects that an `error` can be returned here, though I have not
 // added any actual error handling.
-func (s *server) RecommendShow(ctx context.Context, recommendation_request *pb.ShowRecommendationRequest) (*pb.ShowRecommendation, error) {
+func (s *server) RecommendShow(ctx context.Context, recommendationRequest *pb.ShowRecommendationRequest) (*pb.ShowRecommendation, error) {
+  // Log that the request was received, and is being handled by this function as expected.
   fmt.Println("Recommendation request received.")
 
-  return &pb.ShowRecommendation{ Name: "Matty", Show: "Peaky Blinders" }, nil
+  // Fetch the "name" attribute from the recommendation request. The `GetName` function
+  // is automatically generated from our Protobuf definition.
+  name := recommendationRequest.GetName()
+
+  // Leverage our "shows" package to randomly select a show name.
+  show := shows.SelectRandom()
+
+  // Instantiate a `ShowRecommendation` message and return it; the `nil` returned
+  // with it is our `error` object, since we are not doing any actual error handling here.
+  return &pb.ShowRecommendation{ Name: name, Show: show }, nil
 }
 
 // Executable function.
